@@ -12,7 +12,6 @@ where the port number has been defined using a Kubernetes configMap using this n
 
  configurationservice = ConfigurationService.create(vertx, new ConfigurationServiceOptions()
          .addStore(appStore));
-
  Router router = Router.router(vertx);
 
  router.route().handler(BodyHandler.create());
@@ -31,7 +30,7 @@ where the port number has been defined using a Kubernetes configMap using this n
 The config map contains under the `app.json` key, the list of the key/value pairs defined 
 using JSon as Dataformat for our application as you can see hereafter :
 
-```yaml
+```yml
 apiVersion: v1
 data:
   app.json: |-
@@ -83,16 +82,12 @@ oc policy add-role-to-group view system:serviceaccounts -n vertx-demo
 # Create the ConfigMap
 
 ```
-oc create configmap game-config --from-file=src/main/resources/game.properties
-oc create configmap ui-config --from-file=src/main/resources/ui.json
 oc create configmap app-config --from-file=src/main/resources/app.json
 ```
 
 # To consult the configMap (optional)
 
 ```
-oc get configmap/game-config -o yaml
-oc get configmap/ui-config -o yaml
 oc get configmap/app-config -o yaml
 ```
 
@@ -170,8 +165,6 @@ curl -X PUT http://192.168.64.12:32741/products/prod1122 -d @src/main/resources/
 oc delete service simple-vertx-configmap
 oc delete rc simple-config-map
 
-oc delete configmap/game-config
-oc delete configmap/ui-config
 oc delete configmap/app-config
 ```
 
@@ -184,6 +177,15 @@ oc scale rc simple-config-map --replicas=0
 # Not used
 
 ```
+oc create configmap game-config --from-file=src/main/resources/game.properties
+oc create configmap ui-config --from-file=src/main/resources/ui.json
+
+oc get configmap/game-config -o yaml
+oc get configmap/ui-config -o yaml
+
+oc delete configmap/game-config
+oc delete configmap/ui-config
+
 Json
 oc create configmap game-config --from-file=src/main/resources/game.json
 oc create configmap ui-config --from-file=src/main/resources/ui.json
