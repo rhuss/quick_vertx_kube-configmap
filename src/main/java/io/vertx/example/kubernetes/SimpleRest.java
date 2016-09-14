@@ -64,7 +64,6 @@ public class SimpleRest extends AbstractVerticle {
             LOGGER.info("Config Map - port : " + port);
             vertx.createHttpServer().requestHandler(router::accept).listen(port);
         });
-
     }
 
     private void handleGetProduct(RoutingContext routingContext) {
