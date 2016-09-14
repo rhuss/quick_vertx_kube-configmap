@@ -3,7 +3,7 @@
 Quickstart where the Vert.x container retrieves the Application parameters using a Kubernetes ConfigMap. For this quickstart, we will instantiate a Vertx HTTP Server
 where the port number has been defined using a Kubernetes configMap using this name `app-config`. 
 
-```
+```java
  ConfigurationStoreOptions appStore = new ConfigurationStoreOptions();
  appStore.setType("configmap")
          .setConfig(new JsonObject()
@@ -31,7 +31,7 @@ where the port number has been defined using a Kubernetes configMap using this n
 The config map contains under the `app.json` key, the list of the key/value pairs defined 
 using JSon as Dataformat for our application as you can see hereafter :
 
-```
+```yaml
 apiVersion: v1
 data:
   app.json: |-
