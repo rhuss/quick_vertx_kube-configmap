@@ -1,6 +1,6 @@
 # Quickstart - Vert.x
 
-Quickstart where Vert.X retrieves the Application parameters using Kubernetes ConfigMap.
+Quickstart where the Vert.x container retrieves the Application parameters using a Kubernetes ConfigMap.
 
 # Instructions
 

@@ -49,6 +49,12 @@
             <artifactId>vertx-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+        </dependency>
+
+        <!-- Vertx Configuration Service -->
+        <dependency>
             <groupId>me.escoffier.vertx</groupId>
             <artifactId>vertx-configuration</artifactId>
             <version>1.0.0-SNAPSHOT</version>
