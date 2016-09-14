@@ -1,4 +1,4 @@
-# Quickstart - Vert.x
+# Quickstart - Vert.x - Kubernetes Config Map
 
 Quickstart where the Vert.x container retrieves the Application parameters using a Kubernetes ConfigMap. For this quickstart, we will instantiate a Vertx HTTP Server
 where the port number has been defined using a Kubernetes configMap using this name `app-config`. 
