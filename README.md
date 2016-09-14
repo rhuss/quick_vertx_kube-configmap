@@ -9,7 +9,7 @@ Quickstart where the Vert.x container retrieves the Application parameters using
 ```
 minishift delete
 minishift start --deploy-registry=true --memory=3072 --vm-driver="xhyve"
-minishit docker-env
+minishift docker-env
 eval $(minishift docker-env)
 ```
 

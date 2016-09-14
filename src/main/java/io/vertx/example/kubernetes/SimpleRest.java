@@ -26,6 +26,8 @@ import io.vertx.ext.configuration.ConfigurationStoreOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,8 @@ import java.util.Map;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 public class SimpleRest extends AbstractVerticle {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleRest.class);
 
     // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
@@ -56,7 +60,9 @@ public class SimpleRest extends AbstractVerticle {
         router.get("/products").handler(this::handleListProducts);
 
         configurationservice.getConfiguration(ar -> {
-            vertx.createHttpServer().requestHandler(router::accept).listen(8080);
+            int port = configurationservice.getCachedConfiguration().getInteger("port") != null ? configurationservice.getCachedConfiguration().getInteger("port") : 8080;
+            LOGGER.info("Config Map - port : " + port);
+            vertx.createHttpServer().requestHandler(router::accept).listen(port);
         });
 
     }

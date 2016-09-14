@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Vert.x Configuration - Kubernetes ConfigMap</name>
+    <name>Quickstart :: Vert.x  :: Simple Rest - Kubernetes ConfigMap</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
         <fabric8.maven.plugin.version>2.2.157</fabric8.maven.plugin.version>
 
         <vertx.version>3.3.3</vertx.version>
-        <main.verticle>io.vertx.example.kubernetes.MyVerticle</main.verticle>
+        <main.verticle>io.vertx.example.kubernetes.SimpleRest</main.verticle>
     </properties>
 
     <dependencyManagement>
