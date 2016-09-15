@@ -237,7 +237,9 @@ curl $service/products
 ...
 ```
 
-# Delete Replication controller, service, ConfigMap
+# Troubleshooting
+
+## Delete Replication controller, service, ConfigMap
 
 ```
 oc delete configmap/app-config
@@ -255,13 +257,7 @@ bin/oc-log simple-config-map
 oc edit configmap/app-config
 ```
 
-# Resize Pods
-
-```
-oc scale rc simple-config-map --replicas=0
-```
-
-# Not used
+## Not used
 
 ```
 oc create configmap game-config --from-file=src/main/resources/game.properties
