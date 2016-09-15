@@ -168,7 +168,7 @@ bin/oc-log simple-config-map
 
 The Vertx Configuration Service provides a listener which can be informed if a config parameter of the ConfigMap has changed. The listener checks every 5s if such a modification occured. 
 
-```
+```java
 conf.listen((newConf -> {
   int port = newConf.getInteger("port", 8080);
   httpServer.close();
@@ -176,7 +176,7 @@ conf.listen((newConf -> {
   httpServer.requestHandler(router::accept).listen(port);
 ```
 
-To test this feature, you will edit first the configMap and change the port number from the `8080` to `9090`. Next we will check the log of the pod to verify that the modification has been propagated
+To test this feature, you will edit first the configMap and change the port number from the value `8080` to `9090`. Next we will check the log of the pod to verify that the modification has been propagated
 to the listener of Vertx.
 
 ```
