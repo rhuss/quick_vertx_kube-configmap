@@ -62,22 +62,21 @@ public class SimpleRest extends AbstractVerticle {
         router.get("/products").handler(this::handleListProducts);
 
         conf.getConfiguration(ar -> {
-            int port = conf.getCachedConfiguration().getInteger("port") != null ? conf.getCachedConfiguration().getInteger("port") : 8080;
-            LOG.info("ConfigMap -> port : " + port);
+            if (ar.succeeded()) {
+                int port = ar.result().getInteger("port", 8080);
+                LOG.info("ConfigMap -> port : " + port);
 
-            httpServer = vertx.createHttpServer();
-            httpServer.requestHandler(router::accept).listen(port);
+                httpServer = vertx.createHttpServer();
+                httpServer.requestHandler(router::accept).listen(port);
+            } else {
+                ar.cause().printStackTrace();
+            }
         });
 
         conf.listen((newConf -> {
             LOG.info("New configuration: " + newConf.encodePrettily());
 
-            LOG.info("JSonObject : " + newConf.getJsonObject("port"));
-            LOG.info("Port string : " + newConf.getString("port"));
-            LOG.info("App Config : " + newConf.getString("app.json"));
-            LOG.info("Using the cache : " + conf.getCachedConfiguration().getInteger("port"));
-
-            int port = Integer.valueOf(newConf.getInteger("port"));
+            int port = newConf.getInteger("port", 8080);
             LOG.info("Port has changed: " + port);
 
             httpServer.close();
@@ -143,7 +142,8 @@ public class SimpleRest extends AbstractVerticle {
         appStore.setType("configmap")
                 .setConfig(new JsonObject()
                         .put("namespace", "vertx-demo")
-                        .put("name", "app-config"));
+                        .put("name", "app-config")
+                        .put("key","app.json"));
 
         conf = ConfigurationService.create(vertx, new ConfigurationServiceOptions()
                 .addStore(appStore));
