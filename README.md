@@ -197,9 +197,7 @@ New configuration: {
 ```
 
 If the log reports that the port number is now `9090` and that the HTTP Server has been restarted, then we can edit the OpenShift Service which maps the internal port number used by the Docker container
-and exposed by the pod. 
-
-Remark : This manual step is required as we haven't yet deployed for this quickstart a controller responsible to detect such service [modification](https://github.com/fabric8io/exposecontroller#exposecontroller). 
+and exposed by the pod.
 
 ```
 oc edit service/simple-vertx-configmap
@@ -247,13 +245,6 @@ oc delete configmap/app-config
 oc delete service simple-vertx-configmap
 oc delete rc simple-config-map
 
-docker rmi -f vertx-demo/simple-config-map:1.0.0-SNAPSHOT
-
-docker images
-
-mvn -Popenshift
-
-bin/oc-log simple-config-map
 oc edit configmap/app-config
 ```
 
