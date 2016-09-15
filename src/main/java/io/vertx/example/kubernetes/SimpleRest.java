@@ -16,6 +16,7 @@
 package io.vertx.example.kubernetes;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -37,7 +38,7 @@ import java.util.Map;
  */
 public class SimpleRest extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleRest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleRest.class);
 
     // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
@@ -45,7 +46,8 @@ public class SimpleRest extends AbstractVerticle {
     }
 
     private Map<String, JsonObject> products = new HashMap<>();
-    private ConfigurationService configurationservice;
+    private ConfigurationService conf;
+    private HttpServer httpServer;
 
     @Override public void start() {
 
@@ -59,11 +61,31 @@ public class SimpleRest extends AbstractVerticle {
         router.put("/products/:productID").handler(this::handleAddProduct);
         router.get("/products").handler(this::handleListProducts);
 
-        configurationservice.getConfiguration(ar -> {
-            int port = configurationservice.getCachedConfiguration().getInteger("port") != null ? configurationservice.getCachedConfiguration().getInteger("port") : 8080;
-            LOGGER.info("Config Map - port : " + port);
-            vertx.createHttpServer().requestHandler(router::accept).listen(port);
+        conf.getConfiguration(ar -> {
+            int port = conf.getCachedConfiguration().getInteger("port") != null ? conf.getCachedConfiguration().getInteger("port") : 8080;
+            LOG.info("ConfigMap -> port : " + port);
+
+            httpServer = vertx.createHttpServer();
+            httpServer.requestHandler(router::accept).listen(port);
         });
+
+        conf.listen((newConf -> {
+            LOG.info("New configuration: " + newConf.encodePrettily());
+
+            LOG.info("JSonObject : " + newConf.getJsonObject("port"));
+            LOG.info("Port string : " + newConf.getString("port"));
+            LOG.info("App Config : " + newConf.getString("app.json"));
+            LOG.info("Using the cache : " + conf.getCachedConfiguration().getInteger("port"));
+
+            int port = Integer.valueOf(newConf.getInteger("port"));
+            LOG.info("Port has changed: " + port);
+
+            httpServer.close();
+
+            LOG.info("The HttpServer will be stopped and restarted.");
+            httpServer.requestHandler(router::accept).listen(port);
+        }));
+
     }
 
     private void handleGetProduct(RoutingContext routingContext) {
@@ -123,7 +145,7 @@ public class SimpleRest extends AbstractVerticle {
                         .put("namespace", "vertx-demo")
                         .put("name", "app-config"));
 
-        configurationservice = ConfigurationService.create(vertx, new ConfigurationServiceOptions()
+        conf = ConfigurationService.create(vertx, new ConfigurationServiceOptions()
                 .addStore(appStore));
     }
 

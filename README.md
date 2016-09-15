@@ -158,14 +158,41 @@ or create a new product
 curl -X PUT http://192.168.64.12:32741/products/prod1122 -d @src/main/resources/prod1122.json
 ```
 
+# Get the log of the Container 
 
+```
+bin/oc-log simple-config-map
+```
+
+# Update the port number
+
+The Vertx Configuration Service provides a listener which can be informed if you change a parameter of the ConfigMap. 
+
+```
+```
+
+To test this feature, you will edit the configMap and chaneg the port number from `8080` to `9090`, check the log of the pod and reissue a command to fetch the products to validate that the service is still working
+
+```
+oc edit configmap/app-config
+bin/oc-log simple-config-map
+```
 # Delete Replication controller, service, ConfigMap
 
 ```
+oc delete configmap/app-config
+
 oc delete service simple-vertx-configmap
 oc delete rc simple-config-map
 
-oc delete configmap/app-config
+docker rmi -f vertx-demo/simple-config-map:1.0.0-SNAPSHOT
+
+docker images
+
+mvn -Popenshift
+
+bin/oc-log simple-config-map
+oc edit configmap/app-config
 ```
 
 # Resize Pods
@@ -196,3 +223,4 @@ oc create configmap game-config --from-file=src/main/resources/game.properties
 oc create configmap ui-config --from-file=src/main/resources/ui.properties
 oc create configmap app-config --from-file=src/main/resources/app.properties
 ```
+
