@@ -180,9 +180,9 @@ To test this feature, you will edit first the configMap and change the port numb
 
 ```
 oc edit configmap/app-config
-``
+```
 
-Next` we will check the log of the pod to verify that the modification has been propagated to the listener of Vertx.
+Next, we will check the log of the pod to verify that the modification has been propagated to the listener of Vertx.
 
 ```
 bin/oc-log simple-config-map
