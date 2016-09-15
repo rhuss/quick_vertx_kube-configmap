@@ -166,17 +166,84 @@ bin/oc-log simple-config-map
 
 # Update the port number
 
-The Vertx Configuration Service provides a listener which can be informed if you change a parameter of the ConfigMap. 
+The Vertx Configuration Service provides a listener which can be informed if a config parameter of the ConfigMap has changed. The listener checks every 5s if such a modification occured. 
 
 ```
+conf.listen((newConf -> {
+  int port = newConf.getInteger("port", 8080);
+  httpServer.close();
+
+  httpServer.requestHandler(router::accept).listen(port);
 ```
 
-To test this feature, you will edit the configMap and chaneg the port number from `8080` to `9090`, check the log of the pod and reissue a command to fetch the products to validate that the service is still working
+To test this feature, you will edit first the configMap and change the port number from the `8080` to `9090`. Next we will check the log of the pod to verify that the modification has been propagated
+to the listener of Vertx.
 
 ```
 oc edit configmap/app-config
 bin/oc-log simple-config-map
+... 
+New configuration: {
+  "logging" : "debug",
+  "hostname" : "127.0.0.1",
+  "port" : 7070
+}
+2016-09-15 12:16:50 INFO  SimpleRest:80 - Port has changed: 7070
+2016-09-15 12:16:50 INFO  SimpleRest:84 - The HttpServer will be stopped and restarted. 
 ```
+
+If the log reports that the port number is now `9090` and that the HTTP Server has been restarted, then we can edit the OpenShift Service which maps the internal port number used by the Docker container
+and exposed by the pod. 
+
+Remark : This manual step is required as we haven't yet deployed for this quickstart a controller responsible to detect such service [modification](https://github.com/fabric8io/exposecontroller#exposecontroller). 
+
+```
+oc edit service/simple-vertx-configmap
+... 
+- nodePort: 30740
+  port: 8080
+  protocol: TCP
+  targetPort: 8080
+
+-->
+
+- nodePort: 30740
+  port: 8080
+  protocol: TCP
+  targetPort: 7070
+
+```
+
+Call again the REST endpoint to get all the products
+
+```
+curl http://192.168.64.12:32741/products
+HTTP/1.1 200 OK
+Content-Length: 252
+content-type: application/json
+
+[
+    {
+        "id": "prod7340",
+        "name": "Tea Cosy",
+        "price": 5.99,
+        "weight": 100
+    },
+    {
+        "id": "prod3568",
+        "name": "Egg Whisk",
+        "price": 3.99,
+        "weight": 150
+    },
+    {
+        "id": "prod8643",
+        "name": "Spatula",
+        "price": 1.0,
+        "weight": 80
+    }
+]
+```
+
 # Delete Replication controller, service, ConfigMap
 
 ```
