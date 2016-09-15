@@ -190,9 +190,9 @@ bin/oc-log simple-config-map
 New configuration: {
   "logging" : "debug",
   "hostname" : "127.0.0.1",
-  "port" : 7070
+  "port" : 9090
 }
-2016-09-15 12:16:50 INFO  SimpleRest:80 - Port has changed: 7070
+2016-09-15 12:16:50 INFO  SimpleRest:80 - Port has changed: 9090
 2016-09-15 12:16:50 INFO  SimpleRest:84 - The HttpServer will be stopped and restarted. 
 ```
 
@@ -214,7 +214,7 @@ oc edit service/simple-vertx-configmap
 - nodePort: 30740
   port: 8080
   protocol: TCP
-  targetPort: 7070
+  targetPort: 9090
 
 ```
 
