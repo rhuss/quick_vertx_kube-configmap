@@ -102,7 +102,7 @@ mvn -Popenshift
 First, we must retrieve the IP Address of the service exposed by the OpenShift Router to our host machine
 
 ```
-minishift service simple-vertx-configmap -n vertx-demo --url=true
+cu
 http://192.168.64.12:32741
 ```
 
@@ -217,31 +217,20 @@ oc edit service/simple-vertx-configmap
 Call again the REST endpoint to get all the products
 
 ```
-curl http://192.168.64.12:32741/products
-HTTP/1.1 200 OK
-Content-Length: 252
-content-type: application/json
-
-[
-    {
-        "id": "prod7340",
-        "name": "Tea Cosy",
-        "price": 5.99,
-        "weight": 100
-    },
-    {
-        "id": "prod3568",
-        "name": "Egg Whisk",
-        "price": 3.99,
-        "weight": 150
-    },
-    {
-        "id": "prod8643",
-        "name": "Spatula",
-        "price": 1.0,
-        "weight": 80
-    }
-]
+export service=$(minishift service simple-vertx-configmap -n vertx-demo --url=true)
+curl $service/products
+[ {
+  "id" : "prod7340",
+  "name" : "Tea Cosy",
+  "price" : 5.99,
+  "weight" : 100
+}, {
+  "id" : "prod3568",
+  "name" : "Egg Whisk",
+  "price" : 3.99,
+  "weight" : 150
+}, 
+...
 ```
 
 # Delete Replication controller, service, ConfigMap
