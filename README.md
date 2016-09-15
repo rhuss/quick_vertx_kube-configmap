@@ -102,14 +102,14 @@ mvn -Popenshift
 First, we must retrieve the IP Address of the service exposed by the OpenShift Router to our host machine
 
 ```
-cu
+export service=$(minishift service simple-vertx-configmap -n vertx-demo --url=true)
 http://192.168.64.12:32741
 ```
 
 Next, we can use curl or httpie tool to fetch the products from the REST service
 
 ```
-curl http://192.168.64.12:32741/products
+curl $service/products
 HTTP/1.1 200 OK
 Content-Length: 252
 content-type: application/json
@@ -139,7 +139,7 @@ content-type: application/json
 We can also grab the info about one product
 
 ```
-curl http://192.168.64.12:32741/products/prod7340
+curl $service/products/prod7340
 HTTP/1.1 200 OK
 Content-Length: 82
 content-type: application/json
@@ -155,7 +155,7 @@ content-type: application/json
 or create a new product
 
 ```
-curl -X PUT http://192.168.64.12:32741/products/prod1122 -d @src/main/resources/prod1122.json
+curl -X PUT $service/products/prod1122 -d @src/main/resources/prod1122.json
 ```
 
 # Get the log of the Container 
@@ -176,11 +176,15 @@ conf.listen((newConf -> {
   httpServer.requestHandler(router::accept).listen(port);
 ```
 
-To test this feature, you will edit first the configMap and change the port number from the value `8080` to `9090`. Next we will check the log of the pod to verify that the modification has been propagated
-to the listener of Vertx.
+To test this feature, you will edit first the configMap and change the port number from the value `8080` to `9090`. 
 
 ```
 oc edit configmap/app-config
+``
+
+Next` we will check the log of the pod to verify that the modification has been propagated to the listener of Vertx.
+
+```
 bin/oc-log simple-config-map
 ... 
 New configuration: {
