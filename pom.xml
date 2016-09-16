@@ -255,17 +255,10 @@
                         <artifactId>fabric8-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>json</id>
-                                <phase>generate-resources</phase>
+                                <id>fabric8</id>
                                 <goals>
-                                    <goal>json</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>attach</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>attach</goal>
+                                    <goal>resource</goal>
+                                    <goal>build</goal>
                                 </goals>
                             </execution>
                         </executions>
