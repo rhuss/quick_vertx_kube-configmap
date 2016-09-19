@@ -1,26 +1,5 @@
----
-apiVersion: "extensions/v1beta1"
-kind: "Deployment"
-metadata:
-  labels:
-    container: "vertx"
-    component: "simple-config-map"
-    provider: "fabric8"
-    project: "${project.artifactId}"
-    expose: "true"
-    version: "${project.version}"
-    group: "vertx-demo"
-  name: "simple-config-map"
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      container: "vertx"
-      component: "simple-config-map"
-      provider: "fabric8"
-      project: "${project.artifactId}"
-      expose: "true"
-      group: "vertx-demo"
   template:
     metadata:
       labels:
@@ -30,7 +9,7 @@ spec:
         project: "${project.artifactId}"
         expose: "true"
         version: "${project.version}"
-        group: "vertx-demo"
+#        group: "vertx-demo"
     spec:
       containers:
       - env:

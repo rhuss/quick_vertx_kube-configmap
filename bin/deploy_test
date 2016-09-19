@@ -1,8 +1,22 @@
-#!/bin/bash
 
-echo "Delete service & replication controller"
-oc delete service simple-vertx-configmap
-oc delete rc simple-config-map
+echo "Start & log on"
+./bin/start_minishift_log
+eval $(minishift docker-env)
+
+sleep 5s
+
+echo "Delete vertx-demo project & create a new"
+oc delete project vertx-demo
+oc new-project vertx-demo
+
+echo "Add policies"
+oc policy add-role-to-user view openshift-dev -n vertx-demo
+oc policy add-role-to-group view system:serviceaccounts -n vertx-demo
+
+# echo "Delete service, replication controller & Deployment Config"
+# oc delete service simple-vertx-configmap
+# oc delete rc simple-config-map
+# oc delete dc simple-config-map
 
 echo "Create the configMap"
 oc delete configmap/app-config
@@ -11,26 +25,8 @@ oc create configmap app-config --from-file=src/main/resources/app.json
 echo "Remove old docker image"
 docker rmi -f vertx-demo/simple-config-map:1.0.0-SNAPSHOT
 
-echo "Deploy exposecontroller to watch modification"
-oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:default:exposecontroller
-oc adm policy add-cluster-role-to-group cluster-reader system:serviceaccounts # probably too open for all setups
-
-oc create -f http://central.maven.org/maven2/io/fabric8/devops/apps/exposecontroller/2.2.253/exposecontroller-2.2.253-openshift.yml
-
-echo "Create the ConfigMap to specify the domain"
-cat <<EOF | oc create -f -
-apiVersion: "v1"
-data:
-  expose-rule: "route"
-  domain: "192.168.64.12.xip.io"
-  watch-rate-milliseconds: "5000"
-kind: "ConfigMap"
-metadata:
-  name: "exposecontroller"
-EOF
-
 echo "Create the docker image, kubernetes/openshift config file and deploy the pod"
-mvn -Popenshift
+mvn clean compile fabric8:build fabric8:run
 
 sleep 10s
 

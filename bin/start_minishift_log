@@ -1,0 +1,23 @@
+#!/bin/bash
+
+status=$(minishift status)
+
+if [ $status = "Running" ]; then
+   echo "## Minishift is already running. We will log on to openshift"
+   oc login $(minishift ip):8443 -u admin -p admin
+else
+  echo "## Start Minishift and log on to OpenShift"
+  minishift start
+  oc login $(minishift ip):8443 -u admin -p admin
+fi
+
+project=$(oc project)
+echo $project
+
+if [[ $project == *default* ]]; then
+    echo "## We are still using the Default project. This is perfect !"
+else
+    echo "## We will switch to the project default. Wait a moment ..."
+    oc project default
+    oc project
+fi
