@@ -185,7 +185,7 @@
         </plugins>
     </build>
 
-    <profiles>
+ <!--   <profiles>
         <profile>
             <id>openshift</id>
             <properties>
@@ -292,6 +292,6 @@
                 </repository>
             </repositories>
         </profile>
-    </profiles>
+    </profiles>-->
 
 </project>
